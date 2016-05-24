@@ -66,9 +66,9 @@ class GoogleDrive(object):
             if parent_id:
                 params['body'] = {'parents': [parent_id]}
 
-            google_file = GoogleFile.create(self.service, folder_name,
-                                            mime_type=MimeTypes.Folder,
-                                            **params)
+            google_file = GoogleFile.get_or_create(self.service, folder_name,
+                                                   mime_type=MimeTypes.Folder,
+                                                   **params)
 
             parent_id = google_file.meta_data['id']
             parent_folders.append(google_file)
@@ -78,9 +78,10 @@ class GoogleDrive(object):
         if parent_id:
             main_params['body'] = {'parents': [parent_id]}
 
-        main_file = GoogleFile.create(self.service, file_name,
-                                      mime_type=mime_type,
-                                      **main_params)
+        main_file = GoogleFile.get_or_create(self.service, file_name,
+                                             mime_type=mime_type,
+                                             content=content,
+                                             **main_params)
 
         result = parent_folders + [main_file]
 

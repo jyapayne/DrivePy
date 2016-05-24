@@ -63,6 +63,47 @@ class GoogleFile(object):
 
         return google_file
 
+    @staticmethod
+    def get_or_create(service, name, mime_type=None, content=None, body=None, **params):
+        """Gets a file in GoogleDrive or creates it if it doesn't exist
+
+        Args:
+            service: the API service object
+            name: the name of the file, including the extension
+            mime_type: the mimetype of the file. See config.MimeTypes
+            content: the content string of the file
+            body: a dict-like object, describes additional request body args
+            params: any additional parameters to send to the API
+
+        Returns:
+            A GoogleFile object
+        """
+
+        list_fields = config.ALL_FILE_FIELDS
+
+        body = body or {}
+        body.update({'name': name})
+
+        query = 'name = "{}"'.format(name)
+
+        parents = body.get('parents', [])
+
+        if parents:
+            parent_id = parents[0]
+            query = 'name = "{}" and "{}" in parents'.format(name, parent_id)
+
+        files = self.service.files().list(fields=list_fields, q=query).execute().get('files')
+
+        if files:
+            meta_data = files[0]
+            google_file = GoogleFile(service, meta_data)
+            return google_file
+        else:
+            return GoogleFile.create(service, name,
+                                     mimetype=mime_type,
+                                     content=content,
+                                     body=body, **params)
+
     def refresh(self):
         """Gets the meta data of the file from Google Drive
 
