@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='PyDrive',
+    name='DrivePy',
     version='0.1.0',
     author='Joey Yakimowich-Payne',
     author_email='jyapayne@gmail.com',
