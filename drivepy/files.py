@@ -92,7 +92,7 @@ class GoogleFile(object):
             parent_id = parents[0]
             query = 'name = "{}" and "{}" in parents'.format(name, parent_id)
 
-        files = self.service.files().list(fields=list_fields, q=query).execute().get('files')
+        files = service.files().list(fields=list_fields, q=query).execute().get('files')
 
         if files:
             meta_data = files[0]
