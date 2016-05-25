@@ -9,6 +9,9 @@ ALL_SINGLE_FILE_FIELDS = 'appProperties,capabilities,contentHints,createdTime,de
 
 ALL_PERMISSION_FIELDS = 'allowFileDiscovery,displayName,domain,emailAddress,id,kind,photoLink,role,type'
 
+class GoogleDriveParameterError(Exception):
+    pass
+
 class PermissionRole(object):
     Reader = 'reader'
     Writer = 'writer'

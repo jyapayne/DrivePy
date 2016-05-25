@@ -48,7 +48,7 @@ class GoogleDrive(object):
             A list of the newly created file and it's directories
 
         Raises:
-            A GoogleFileException if the permissions object is specified and
+            A GoogleDriveParameterError if the permissions object is specified and
             there is no 'email' key
         """
         file_sections = path.split('/')
@@ -89,7 +89,7 @@ class GoogleDrive(object):
             for permission in permissions:
                 email = permission.pop('email', '')
                 if not email:
-                    raise Exception('There must be an email key in the permissions object!')
+                    raise config.GoogleDriveParameterError('There must be an email key in the permissions object!')
                 for google_file in result:
                     google_file.give_permission(email, **permission)
 
@@ -125,7 +125,7 @@ class GoogleDrive(object):
                 fold = folds[0]
                 parent_id = fold['id']
             else:
-                raise Exception('File {} does not exist!'.format(path))
+                return []
 
         files = self.list_files(q='name = "{}" and "{}" in parents'.format(file_name, parent_id))
 
