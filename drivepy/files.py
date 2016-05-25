@@ -52,6 +52,7 @@ class GoogleFile(object):
         create_params = {}
 
         if content:
+            utf_content = content
             try:
                 utf_content = content.encode('utf-8')
             except UnicodeDecodeError:
@@ -217,6 +218,7 @@ class GoogleFile(object):
         params = {}
 
         if content:
+            utf_content = content
             try:
                 utf_content = content.encode('utf-8')
             except UnicodeDecodeError:
