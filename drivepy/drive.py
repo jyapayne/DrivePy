@@ -32,7 +32,7 @@ class GoogleDrive(object):
                                           **params).execute().get('files')
         return files
 
-    def create_file_from_path(self, path, content=None, mime_type=None, permissions=None):
+    def create_file_from_path(self, path, content=None, mime_type=None, body=None, permissions=None):
         """Creates a file on google drive from a path
 
         Args:
@@ -61,27 +61,27 @@ class GoogleDrive(object):
         parent_folders = []
 
         for folder_name in folders:
-            params = {}
+            folder_body = {}
 
             if parent_id:
-                params['body'] = {'parents': [parent_id]}
+                folder_body = {'parents': [parent_id]}
 
             google_file = GoogleFile.get_or_create(self.service, folder_name,
                                                    mime_type=MimeTypes.Folder,
-                                                   **params)
+                                                   body=folder_body)
 
             parent_id = google_file.meta_data['id']
             parent_folders.append(google_file)
 
-        main_params = {}
+        body = body or {}
 
-        if parent_id:
-            main_params['body'] = {'parents': [parent_id]}
+        if parent_id and 'parents' not in body:
+            body.update({'parents': [parent_id]})
 
         main_file = GoogleFile.get_or_create(self.service, file_name,
                                              mime_type=mime_type,
                                              content=content,
-                                             **main_params)
+                                             body=body)
 
         result = parent_folders + [main_file]
 
