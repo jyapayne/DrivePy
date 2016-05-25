@@ -49,16 +49,20 @@ class GoogleFile(object):
             if guess is not None:
                 body['mimeType'] = guess
 
-        params = {}
+        create_params = {}
 
         if content:
-            cont = io.BytesIO(content.encode('utf-8'))
+            try:
+                utf_content = content.encode('utf-8')
+            except UnicodeDecodeError:
+                pass
+            cont = io.BytesIO(utf_content)
             media_body = MediaIoBaseUpload(cont,
                                            body['mimeType'],
                                            resumable=True)
-            params['media_body'] = media_body
+            create_params['media_body'] = media_body
 
-        meta_data = service.files().create(body=body, fields=fields, **params).execute()
+        meta_data = service.files().create(body=body, fields=fields, **create_params).execute()
 
         google_file = GoogleFile(service, meta_data)
         google_file.content = content
@@ -213,7 +217,11 @@ class GoogleFile(object):
         params = {}
 
         if content:
-            cont = io.BytesIO(content.encode('utf-8'))
+            try:
+                utf_content = content.encode('utf-8')
+            except UnicodeDecodeError:
+                pass
+            cont = io.BytesIO(utf_content)
             media_body = MediaIoBaseUpload(cont,
                                            self.meta_data['mimeType'],
                                            resumable=True)
