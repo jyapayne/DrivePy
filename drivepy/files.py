@@ -40,6 +40,8 @@ class GoogleFile(object):
         body = body or {}
         body.update({'name': name})
 
+        mime_type = mime_type or body.get('mimeType')
+
         if mime_type is not None:
             body['mimeType'] = mime_type
         else:
@@ -100,7 +102,7 @@ class GoogleFile(object):
             return google_file
         else:
             return GoogleFile.create(service, name,
-                                     mimetype=mime_type,
+                                     mime_type=mime_type,
                                      content=content,
                                      body=body, **params)
 
